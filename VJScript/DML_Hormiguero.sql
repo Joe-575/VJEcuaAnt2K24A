@@ -15,16 +15,17 @@ INSERT INTO VJCatalogo(idCatalogoPadre,       nombre,         detalle)
 VALUES                  
                         (1,             'HLarva',        'Etapa inicial' ),
                         (1,             'HSoldado',      'Tipos de hormiga' ),
-                        (2,             'Hembra',        'Sexo de hormiga' ),
+                        (2,             'Macho',         'Sexo de hormiga' ),
+                        (2,             'Asexual',       'Sexo de hormiga' ),
                         (3,             'Viva',          'Estado de hormiga' ),
                         (3,             'Muerta',        'Estado de hormiga' ),
                         (4,             'Carnivoro',     'Ingesta Nativa' ),
+                        (4,             'Nectarívoros',  'Ingesta Nativa' ),
                         (5,             'XY',            'GenoAlimento' );
-                        
 
 
 
-INSERT INTO VJHormiga(idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento, nombre) VALUES
-    (7, 8, 9, 11, 12, 13, 'Pepe la larva' ),
-    (8, 8, 9, 11, 12, 13, ''),
-    (8, 8, 9, 11, 12, 13, '');
+INSERT INTO VJHormiga(idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento, idCatalogoEntrenada, nombre) VALUES
+    (7, 10, 11, 13, 'NO', 13, 'Pepe la larva' ),
+    (8, 8, 9, 11, 12,'SI', 13, ''),
+    (8, 8, 9, 11, 12, 13,'SI', '');

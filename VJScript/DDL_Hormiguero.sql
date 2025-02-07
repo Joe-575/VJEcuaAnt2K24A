@@ -22,7 +22,7 @@ CREATE TABLE VJHormiga(
     idCatalogoIngestaNativa INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
     idCatalogoGenoAlimento  INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
     nombre                  VARCHAR(255) NOT NULL,
-    entranada               BOOLEAN NOT NULL DEFAULT 0,
+    entrenada               VARCHAR(2) NOT NULL DEFAULT 'NO',
     estado                  varchar(20) NOT NULL DEFAULT('A'),
     fechaCreacion           DATETIME DEFAULT (datetime('now', 'localtime')),
     fechaModificacion       DATETIME

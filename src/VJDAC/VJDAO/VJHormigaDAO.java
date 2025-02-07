@@ -22,7 +22,7 @@ private static final String SELECT_QUERY = "SELECT "
     + "estado, "
     + "fechaCreaacion, "
     + "FechaModificacion "
-    + "FROM VJHormiga WHERE Estado = 'A'";
+    + "FROM VJHormiga WHERE estado = 'A'";
 
     @Override
     public VJHormigaDTO newDTO(ResultSet rs) {
@@ -97,7 +97,7 @@ private static final String SELECT_QUERY = "SELECT "
                         dto.getIdCatalogoGenoAlimento(),
                         dto.getIdCatalogoIngestaNativa(),
                         dto.getNombre(),
-                        dto.getEstado(),
+                        (dto.getEstado() != null) ? dto.getEstado() : "A",
                         dto.getFechaCreacion());
     }
 
