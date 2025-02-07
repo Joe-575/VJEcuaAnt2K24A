@@ -28,8 +28,8 @@ public abstract class VJEcuaAntStyle {
     public static final Cursor VJCURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
 
     public static final URL VJURL_MAIN  = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/logo.png");
-    public static final URL VJURL_LOGO  = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/icono.png");
-    public static final URL VJURL_SPLASH = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/logo.png");
+    public static final URL VJURL_LOGO  = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/logo.png");
+    public static final URL VJURL_SPLASH = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/icono.png");
 
 
     public static final CompoundBorder createBorderRect(){

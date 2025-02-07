@@ -16,8 +16,9 @@ public abstract class VJSplashForm   {
     private static JLabel       VJlblSplash ;
 
     public static void show() {
+        
         try {
-            VJicoImagen  = new ImageIcon(VJEcuaAntStyle.URL_SPLASH);
+            VJicoImagen  = new ImageIcon(VJEcuaAntStyle.VJURL_SPLASH);
             VJlblSplash  = new JLabel(VJicoImagen);
             VJprbLoaging = new JProgressBar(0, 100);
             VJprbLoaging.setStringPainted(true);
@@ -40,7 +41,7 @@ public abstract class VJSplashForm   {
             }
             VJfrmSplash.setVisible(false);
         } catch (Exception e) {
-            VJEcuaAntStyle.showMsgError("Tenemos problemas con el spash ");
+            VJEcuaAntStyle.showMsgError(" Problemas con splash ");
 
             e.printStackTrace();
         }

@@ -36,8 +36,8 @@ public class VJHormigueroBL {
         StringBuilder fullDataHormiga = new StringBuilder();
         for (VJHormiga hormiga : lstHormiguero)
             fullDataHormiga.append(hormiga.toString()).append("\n");
-        new VJHormigueroDAC().saveHorigueroToCSV(fullDataHormiga.toString());
-        return "HORMIGUERO almacenado";
+        new VJHormigueroDAC().saveHormigueroCSV(null);
+        return "HORMIGUERO GUARDADO";
     }
 
     public String alimentarHormiga(int Idhormiga, String alimentoGeno, String alimentoNativo) throws VJAppException{ 

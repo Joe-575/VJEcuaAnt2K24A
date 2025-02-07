@@ -7,7 +7,6 @@ import java.util.List;
 import VJDAC.VJDataHelperSQLite;
 import VJDAC.VJIDAO;
 import VJDAC.VJDTO.VJCatalogoDTO;
-import VJInfra.VJAppException;
 
 public class VJCatalogoDAO extends VJDataHelperSQLite implements VJIDAO<VJCatalogoDTO> {
     private static final String SELECT_QUERY = "SELECT "
@@ -18,10 +17,10 @@ public class VJCatalogoDAO extends VJDataHelperSQLite implements VJIDAO<VJCatalo
     + "estado, "
     + "fechaCrea, "
     + "fechaModificacion "
-    + " FROM Catalogo WHERE estado = 'A";
+    + " FROM VJCatalogo WHERE estado = 'A";
 
     @Override
-    public VJCatalogoDTO newDTO(ResultSet rs) {
+    public VJCatalogoDTO vjnewDTO(ResultSet rs) {
         try{
             return new VJCatalogoDTO(
                 rs.getInt("idCatalogo"),
@@ -33,18 +32,19 @@ public class VJCatalogoDAO extends VJDataHelperSQLite implements VJIDAO<VJCatalo
                 rs.getString("fechaModificacion")
             );
         }catch (SQLException e){
-            new VJAppException(e, getClass().getName(), "NewDTO()");
+            System.out.println(e);
+            //new VJAppException(e, getClass().getName(), "NewDTO()");
         }
         return null;
     }
 
     @Override
-    public VJCatalogoDTO readBy(Integer id) throws Exception {
+    public VJCatalogoDTO vjreadBy(Integer id) throws Exception {
         String query = SELECT_QUERY + " AND idCatalogo = ?";
-        return executeReadBy(query, rs -> newDTO(rs), id);
+        return executeReadBy(query, rs -> vjnewDTO(rs), id);
     }
 
-    public List<VJCatalogoDTO> readByPadre(Integer idPadre) throws Exception {
+    public List<VJCatalogoDTO> vjreadByPadre(Integer idPadre) throws Exception {
         String query = "SELECT   h.idCatalogo, " + 
                                 "h.idCatalogoPadre, " +
                                 "h.nombre, " +     
@@ -52,22 +52,22 @@ public class VJCatalogoDAO extends VJDataHelperSQLite implements VJIDAO<VJCatalo
                                 "h.estado, " +             
                                 "h.fechaCreacion, " +          
                                 "h.fechaModificacion " +
-                        " FROM Catalogo p " +
-                        " JOIN Catalogo h ON h.idCatalogoPadre = p.idCatalogo " +
+                        " FROM VJCatalogo p " +
+                        " JOIN VJCatalogo h ON h.idCatalogoPadre = p.idCatalogo " +
                         " WHERE h.estado = 'A' AND p.idCatalogo = ?";
 
-        return executeReadByPadre(query, rs -> newDTO(rs), idPadre);
+        return executeReadByPadre(query, rs -> vjnewDTO(rs), idPadre);
     }
 
     @Override
-    public List<VJCatalogoDTO> readAll() throws Exception {
+    public List<VJCatalogoDTO> vjreadAll() throws Exception {
         String query = SELECT_QUERY;
-        return executeReadAll(query, rs -> newDTO(rs));
+        return executeReadAll(query, rs -> vjnewDTO(rs));
     }
 
     @Override
-    public boolean create(VJCatalogoDTO dto) throws Exception {
-       String query = "INSERT INTO Catalogo ("
+    public boolean vjcreate(VJCatalogoDTO dto) throws Exception {
+       String query = "INSERT INTO VJCatalogo ("
                      + "idCatalogoPadre, "
                      + "nombre,"
                      + "detalle,"
@@ -83,8 +83,8 @@ public class VJCatalogoDAO extends VJDataHelperSQLite implements VJIDAO<VJCatalo
     }
 
     @Override
-    public boolean update(VJCatalogoDTO dto) throws Exception {
-        String query = "UPDATE Catalogo SET "
+    public boolean vjupdate(VJCatalogoDTO dto) throws Exception {
+        String query = "UPDATE VJCatalogo SET "
                                     + "idCatalogoPadre = ?, "
                                     + "nombre = ?, "
                                     + "detalle = ?, "
@@ -98,13 +98,13 @@ public class VJCatalogoDAO extends VJDataHelperSQLite implements VJIDAO<VJCatalo
     }
 
     @Override
-    public boolean delete(Integer id) throws Exception {
-        String query = "UPDATE Catalogo SET estado = ?, fechaModificacion = ? WHERE idCatalogo = ?";
+    public boolean vjdelete(Integer id) throws Exception {
+        String query = "UPDATE VJCatalogo SET estado = ?, fechaModificacion = ? WHERE idCatalogo = ?";
         return execute(query, "X", getDateTimeNow(), id);
     }
 
     @Override
-    public Integer getMaxRow() throws Exception {
+    public Integer vjgetMaxRow() throws Exception {
         throw new UnsupportedOperationException("Unimplemented method 'getMaxRow'");
     }
 

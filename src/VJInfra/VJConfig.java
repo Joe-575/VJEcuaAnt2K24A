@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 public abstract class VJConfig {
     //public static final String URL_LOGO = VJConfig.class.getResourceAsStream("VJUIC/VJResource/logo.png");
     //public static final URL URL_LOGO = Config.class.getResource("VJUIC/VJResource/logo.png");
-    public static final String DATAFILE = "VJDataFile/hormiguero.csv";
+    public static final String DATEFILE = "VJDataFile/hormiguero.csv";
     public static final String LOGFILE = "VJDataFile/log.txt";
     
 

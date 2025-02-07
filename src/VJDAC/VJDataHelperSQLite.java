@@ -14,7 +14,7 @@ import java.util.function.Function;
 import VJInfra.VJAppException;
 
 public class VJDataHelperSQLite {
-    private static String DBPathConnection = "jdbc:sqlite:database//Hormiguero.db";
+    private static String DBPathConnection = "jdbc:sqlite:VJDataBase//VJEcuaAnt.sqlite";
 
     protected VJDataHelperSQLite(){}
 
@@ -78,6 +78,7 @@ public class VJDataHelperSQLite {
             }
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
+            System.out.println(e);
             throw new VJAppException(e, getClass().getName(), "execute()");
         }
     }

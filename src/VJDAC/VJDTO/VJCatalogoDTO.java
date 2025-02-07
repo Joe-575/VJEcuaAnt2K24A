@@ -76,7 +76,7 @@ public class VJCatalogoDTO {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getFechaModificacio() {
+    public String getFechaModificacion() {
         return fechaModificacio;
     }
 
@@ -87,12 +87,12 @@ public class VJCatalogoDTO {
     @Override
     public String toString() {
         return getClass().getName()
-        +"\n idCatalogo: "          + getIdCatalogo()
+        +"\n  idCatalogo: "          + getIdCatalogo()
         + "\n idCatalogoPadre: "    + getIdCatalogoPadre()  
         + "\n nombre: "             + getNombre()
         + "\n detalle: "            + getDetalle()
-        + "\nestado: "              + getEstado()
-        + "\nfechaCreacion: "       + getFechaCreacion()
-        + "\nfechaModificacion: "   + getFechaModificacio();
+        + "\n estado: "              + getEstado()
+        + "\n fechaCreacion: "       + getFechaCreacion()
+        + "\n fechaModificacion: "   + getFechaModificacion();
     }
 }

@@ -14,22 +14,22 @@ public class VJBLFactory<T>{
     }
 
     public List<T> getAll() throws Exception{
-        return oDAO.readAll();
+        return oDAO.vjreadAll();
     }
 
     public T getBy(Integer id) throws Exception{
-        return oDAO.readBy(id);
+        return oDAO.vjreadBy(id);
     }
 
     public boolean add(T oT) throws Exception{
-        return oDAO.create(oT);
+        return oDAO.vjcreate(oT);
     }
 
     public boolean upd(T oT) throws Exception{
-        return oDAO.update(oT);
+        return oDAO.vjupdate(oT);
     }
 
     public boolean del(Integer id) throws Exception{
-        return oDAO.delete(id);
+        return oDAO.vjdelete(id);
     }
 }
