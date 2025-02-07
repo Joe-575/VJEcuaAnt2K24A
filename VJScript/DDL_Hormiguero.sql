@@ -21,6 +21,7 @@ CREATE TABLE VJHormiga(
     idCatalogoEstado        INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
     idCatalogoIngestaNativa INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
     idCatalogoGenoAlimento  INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
+    --idCatalogoEntrenada     INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
     nombre                  VARCHAR(255) NOT NULL,
     entrenada               VARCHAR(2) NOT NULL DEFAULT 'NO',
     estado                  varchar(20) NOT NULL DEFAULT('A'),

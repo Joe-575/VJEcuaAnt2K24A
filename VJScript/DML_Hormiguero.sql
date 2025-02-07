@@ -21,11 +21,14 @@ VALUES
                         (3,             'Muerta',        'Estado de hormiga' ),
                         (4,             'Carnivoro',     'Ingesta Nativa' ),
                         (4,             'Nectarívoros',  'Ingesta Nativa' ),
-                        (5,             'XY',            'GenoAlimento' );
+                        (5,             'XY',            'GenoAlimento' ),
+                        (5,             'X',            'GenoAlimento' );
 
 
 
-INSERT INTO VJHormiga(idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento, idCatalogoEntrenada, nombre) VALUES
-    (7, 10, 11, 13, 'NO', 13, 'Pepe la larva' ),
-    (8, 8, 9, 11, 12,'SI', 13, ''),
-    (8, 8, 9, 11, 12, 13,'SI', '');
+INSERT INTO VJHormiga (
+    idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento, nombre) 
+VALUES
+    (7, 10, 11, 14, 16, 'Pepe la larva'),
+    (8, 9, 11, 13, 15, 'Juan el soldado'),
+    (8, 9, 11, 13, 15, 'Pedro el soldado');
