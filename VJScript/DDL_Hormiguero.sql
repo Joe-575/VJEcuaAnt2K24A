@@ -1,4 +1,4 @@
--- database: ../VJDatabase/VJEcuaAnt.db
+-- database: ../VJDataBase/VJEcuaAnt.sqlite
 
 
 DROP TABLE IF EXISTS VJHormiga;
@@ -21,8 +21,9 @@ CREATE TABLE VJHormiga(
     idCatalogoEstado        INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
     idCatalogoIngestaNativa INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
     idCatalogoGenoAlimento  INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
-    idCatalogoEntranada     INTEGER NOT NULL REFERENCES VJCatalogo(idCatalogo),
-    estado varchar(20)      NOT NULL DEFAULT('A'),
+    nombre                  VARCHAR(255) NOT NULL,
+    entranada               BOOLEAN NOT NULL DEFAULT 0,
+    estado                  varchar(20) NOT NULL DEFAULT('A'),
     fechaCreacion           DATETIME DEFAULT (datetime('now', 'localtime')),
     fechaModificacion       DATETIME
 );

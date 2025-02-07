@@ -1,4 +1,4 @@
--- database: ../VJDatabase/VJEcuaAnt.db
+-- database: ../VJDataBase/VJEcuaAnt.sqlite
 
 
 INSERT INTO VJCatalogo(idCatalogoPadre,       nombre,                  detalle)
@@ -13,18 +13,18 @@ VALUES                  (NULL,             'hormigaTipo',       'Tipos de hormig
 
 INSERT INTO VJCatalogo(idCatalogoPadre,       nombre,         detalle)
 VALUES                  
-                        (1,             'HSoldado',      'Tipos de hormigas' ),
-                        (2,             'Hembra',        'Sexo de hormigas' ),
-                        (3,             'Viva',          'Estado de hormigas' ),
-                        (3,             'Muerta',        'Estado de hormigas' ),
+                        (1,             'HLarva',        'Etapa inicial' ),
+                        (1,             'HSoldado',      'Tipos de hormiga' ),
+                        (2,             'Hembra',        'Sexo de hormiga' ),
+                        (3,             'Viva',          'Estado de hormiga' ),
+                        (3,             'Muerta',        'Estado de hormiga' ),
                         (4,             'Carnivoro',     'Ingesta Nativa' ),
-                        (5,             'XY',            'GenoAlimento' ),
-                        (6,             'Entrenada',      'Entremaniento' );
+                        (5,             'XY',            'GenoAlimento' );
                         
 
 
 
-INSERT INTO VJHormiga(idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento, idCatalogoEntranada) VALUES
-    (7, 8, 9, 11, 12, 13 ),
-    (7, 8, 9, 11, 12, 13 ),
-    (7, 8, 9, 11, 12, 13 );
+INSERT INTO VJHormiga(idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento, nombre) VALUES
+    (7, 8, 9, 11, 12, 13, 'Pepe la larva' ),
+    (8, 8, 9, 11, 12, 13, ''),
+    (8, 8, 9, 11, 12, 13, '');

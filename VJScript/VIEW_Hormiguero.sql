@@ -1,4 +1,4 @@
--- database: ../VJDatabase/VJEcuaAnt.db
+-- database: ../VJDataBase/VJEcuaAnt.sqlite
 
 DROP VIEW VJVwHormiga;
 
