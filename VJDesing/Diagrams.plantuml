@@ -1,0 +1,96 @@
+@startuml
+
+package VJBLC {
+    class VJBLFactory<T> {
+        - VJIDAO<T> oDAO
+        + VJBLFactory(Supplier<VJIDAO<T>> supplier)
+        + List<T> getAll() throws Exception
+        + T getBy(Integer id) throws Exception
+        + boolean add(T oT) throws Exception
+        + boolean upd(T oT) throws Exception
+        + boolean del(Integer id) throws Exception
+    }
+    
+    class VJCatalogo {
+        - VJCatalogoDAO oCatalogoDAO
+        + Map<Integer, String> vjgetAllHormigaTipo() throws Exception
+        + Map<Integer, String> vjgetAllHormigaTipoSexo() throws Exception
+        + Map<Integer, String> vjgetAllHormigaTipoEstado() throws Exception
+        + Map<Integer, String> raGetAllHormigaTipoGeno() throws Exception
+        + Map<Integer, String> raGetAllHormigaTipoIngesta() throws Exception
+        - Map<Integer, String> vjgetMap(Integer idCatalogoPadre) throws Exception
+    }
+    
+    class VJHormigueroBL {
+        + ArrayList<VJHormiga> lstHormiguero
+        + String crearLarva() throws VJAppException
+        + String eliminarHormiga(int idHormiga) throws Exception
+        + String guardarHormiguero() throws VJAppException
+        + String alimentarHormiga(int Idhormiga, String alimentoGeno, String alimentoNativo) throws VJAppException
+    }
+}
+
+package VJDAC {
+    class VJDataHelperSQLite {
+        - static String DBPathConnection
+        + Connection openConnection() throws VJAppException
+        + <T> T executeReadBy(String query, Function<ResultSet, T> mapper, Object... params) throws Exception
+        + <T> List<T> executeReadByPadre(String query, Function<ResultSet, T> mapper, Object... params) throws Exception
+        + <T> List<T> executeReadAll(String query, Function<ResultSet, T> mapper) throws Exception
+        + boolean execute(String query, Object... params) throws Exception
+        + String getDateTimeNow()
+    }
+    
+    class VJHormigueroDAC {
+        + void saveHormigueroCSV(List<String> fullDataHormiga) throws VJAppException
+    }
+    
+    interface VJIDAO<T> {
+        + T vjnewDTO(ResultSet rs)
+        + T vjreadBy(Integer id) throws Exception
+        + List<T> vjreadAll() throws Exception
+        + boolean vjcreate(T dto) throws Exception
+        + boolean vjupdate(T dto) throws Exception
+        + boolean vjdelete(Integer id) throws Exception
+        + Integer vjgetMaxRow() throws Exception
+    }
+}
+
+package VJInfra {
+    class VJAppException extends Exception {
+        + VJAppException(String message)
+        + VJAppException(Exception e, String clase, String metodo)
+    }
+    
+    class VJConfig {
+        + static final String DATEFILE
+        + static final String LOGFILE
+        + static void showMsg(String msg)
+        + static void showMsgError(String msg)
+        + static boolean showConfirmYesNo(String msg)
+    }
+}
+
+package VJUIC {
+    class VJEcuaAntStyle {
+        + static final Color VJCOLOR_FONT
+        + static final Color VJCOLOR_FONT_LIGHT
+        + static final Color VJCOLOR_CURSOR
+        + static final Color VJCOLOR_BORDER
+        + static final Font VJFONT
+        + static final Font VJFONT_BOLD
+        + static final Font VJFONT_SMALL
+        + static final int VJALIGNMENT_LEFT
+        + static final int VJALIGNMENT_RIGHT
+        + static final int VJALIGNMENT_CENTER
+    }
+}
+
+VJBLFactory -> VJIDAO
+VJCatalogo -> VJCatalogoDAO
+VJHormigueroBL -> VJHormiga
+VJDataHelperSQLite -> VJAppException
+VJHormigueroDAC -> VJAppException
+VJConfig -> VJAppException
+
+@enduml

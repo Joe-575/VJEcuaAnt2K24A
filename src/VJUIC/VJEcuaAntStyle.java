@@ -13,7 +13,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 public abstract class VJEcuaAntStyle {
     public static final Color VJCOLOR_FONT = new Color(220, 0, 0); //(218, 8, 40)
-    public static final Color VJCOLOR_FONT_LIGHT = new Color(100, 100, 100);
+    public static final Color VJCOLOR_FONT_LIGHT = new Color(10, 100, 100);
     public static final Color VJCOLOR_CURSOR = Color.black;
     public static final Color VJCOLOR_BORDER = Color.lightGray;
     public static final Font  VJFONT         = new Font("JetBrains Mono", Font.PLAIN, 14);

@@ -27,8 +27,8 @@ VALUES
 
 
 INSERT INTO VJHormiga (
-    idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento, nombre) 
+    idCatalogoTipo, idCatalogoSexo, idCatalogoEstado, idCatalogoIngestaNativa, idCatalogoGenoAlimento) 
 VALUES
-    (7, 10, 11, 14, 16, 'Pepe la larva'),
-    (8, 9, 11, 13, 15, 'Juan el soldado'),
-    (8, 9, 11, 13, 15, 'Pedro el soldado');
+    (7, 10, 11, 14, 16),
+    (8, 9, 11, 13, 15),
+    (8, 9, 11, 13, 15);

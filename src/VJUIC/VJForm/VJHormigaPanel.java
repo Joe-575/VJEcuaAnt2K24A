@@ -3,13 +3,9 @@ package VJUIC.VJForm;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +14,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,7 +24,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import VJBLC.VJCatalogo;
-import VJDAC.VJDataHelperSQLite;
 import VJDAC.VJHormigueroDAC;
 import VJDAC.VJDAO.*;
 import VJDAC.VJDTO.*;
@@ -222,17 +216,19 @@ public class VJHormigaPanel extends JPanel {
             VJHormigaDAO dao = new VJHormigaDAO();
             VJHormigaDTO nuevaLarva = new VJHormigaDTO();
     
-            nuevaLarva.setIdCatalogoTipo(8);  
-            nuevaLarva.setIdCatalogoSexo(9);  
-            nuevaLarva.setIdCatalogoEstado(11);  
-            nuevaLarva.setIdCatalogoGenoAlimento(13); 
-            nuevaLarva.setIdCatalogoIngestaNativa(15); 
-            nuevaLarva.setEntrenada("NO"); 
-            nuevaLarva.setEstado("A");  
+            // Corrección de los valores según la tabla proporcionada
+            nuevaLarva.setIdCatalogoTipo(7);  // HLarva
+            nuevaLarva.setIdCatalogoSexo(10); // Asexual
+            nuevaLarva.setIdCatalogoEstado(11); // Viva
+            nuevaLarva.setIdCatalogoGenoAlimento(16); // Genoma X
+            nuevaLarva.setIdCatalogoIngestaNativa(14); // Nectarívoro
+            nuevaLarva.setEntrenada("NO"); // No entrenada
+            nuevaLarva.setEstado("A"); // Activa
     
+            // Intentar crear la larva en la BD
             if (dao.vjcreate(nuevaLarva)) {
                 VJConfig.showMsg("Larva creada exitosamente.");
-                vjShowData();  
+                vjShowData();  //  Actualizar la tabla para reflejar el nuevo dato
             } else {
                 VJConfig.showMsgError("Error al crear la larva.");
             }
@@ -241,6 +237,7 @@ public class VJHormigaPanel extends JPanel {
             VJConfig.showMsgError("Error: " + e.getMessage());
         }
     }
+    
     
     private void vjAlimentar() {
         try {
@@ -254,52 +251,89 @@ public class VJHormigaPanel extends JPanel {
             System.out.println("ID de la hormiga seleccionada: " + idHormiga);
     
             VJHormigaDAO dao = new VJHormigaDAO();
-            VJHormigaDTO hormiga = dao.vjreadBy(idHormiga); 
+            VJHormigaDTO hormiga = dao.vjreadBy(idHormiga);
     
             if (hormiga == null) {
                 VJConfig.showMsgError("No se encontró la hormiga con el ID seleccionado.");
                 return;
             }
     
-            if (hormiga.getIdCatalogoEstado() == 12) {
+            // Definir constantes para IDs de catálogos
+            final int ESTADO_MUERTA = 12;
+            final int ESTADO_VIVA = 11;
+            final int TIPO_LARVA = 7;
+            final int TIPO_SOLDADO = 8;
+            final int SEXO_MACHO = 9;
+            final int ALIMENTO_CARNIVORO = 13;
+            final int ALIMENTO_NECTARIVORO = 14;
+            
+            // Verificar si la hormiga está muerta
+            if (hormiga.getIdCatalogoEstado() == ESTADO_MUERTA) {
                 VJConfig.showMsgError("No se puede alimentar a una hormiga muerta.");
                 return;
             }
     
+            // Obtener los valores seleccionados en los comboboxes
             String genoAlimento = (String) comboBox1.getSelectedItem();
             String ingestaNativa = (String) comboBox2.getSelectedItem();
     
-            if (hormiga.getIdCatalogoTipo() == 6) { 
-                if ("Carnivoro".equals(ingestaNativa) && "XX".equals(genoAlimento)) {
-                    hormiga.setIdCatalogoTipo(7); 
-                    hormiga.setIdCatalogoIngestaNativa(17); 
-                    VJConfig.showMsg("La larva ha evolucionado a Soldado");
-                } else if ("Nectarívoro".equals(ingestaNativa)) {
-                    hormiga.setIdCatalogoIngestaNativa(20);
-                    VJConfig.showMsg("Alimentaste a la larva.");
-                } else {
-                    hormiga.setIdCatalogoEstado(12); 
-                    VJConfig.showMsgError("La larva ha muerto.");
-                }
-            } else if (hormiga.getIdCatalogoTipo() == 7) { 
-                if ("Carnivoro".equals(ingestaNativa) && "XX".equals(genoAlimento)) {
-                    VJConfig.showMsg("El soldado a comido.");
-                } else {
-                    hormiga.setIdCatalogoEstado(12); 
-                    VJConfig.showMsgError("La rastreadora ha muerto.");
-                }
+            if (genoAlimento == null || ingestaNativa == null) {
+                VJConfig.showMsgError("Selecciona una opción válida para la alimentación.");
+                return;
             }
     
-            if (dao.vjupdate(hormiga)) {
-                vjShowData();
+            boolean isCarnivoro = "Carnivoro".equals(ingestaNativa);
+            boolean isNectarivoro = "Nectarívoros".equals(ingestaNativa);
+            boolean isGenomaXY = "XY".equals(genoAlimento);
+            boolean isGenomaX = "X".equals(genoAlimento);
+            boolean isGenomaXX = "XX".equals(genoAlimento);
+    
+            boolean isUpdated = false;
+    
+            // Lógica de alimentación e inyección de genoma
+            if (hormiga.getIdCatalogoTipo() == TIPO_LARVA) {
+                if (isCarnivoro && isGenomaXY) {
+                    //  Larva + Carnívoro (inyectado con XY) -> Soldado, Macho, Viva
+                    hormiga.setIdCatalogoTipo(TIPO_SOLDADO);
+                    hormiga.setIdCatalogoSexo(SEXO_MACHO);
+                    hormiga.setIdCatalogoEstado(ESTADO_VIVA);
+                    VJConfig.showMsg("La Larva ha evolucionado a Soldado.");
+                } else if (isNectarivoro && (isGenomaX || isGenomaXY || isGenomaXX)) {
+                    //  Larva + Nectarívoro (inyectado con cualquier genoma) -> Sigue viva
+                    VJConfig.showMsg("Alimentaste a la Larva, sigue viva.");
+                } else {
+                    //  Cualquier otro caso -> Muere
+                    hormiga.setIdCatalogoEstado(ESTADO_MUERTA);
+                    VJConfig.showMsgError("Ups...! La Larva ha muerto.");
+                }
+                isUpdated = true;
+            } else if (hormiga.getIdCatalogoTipo() == TIPO_SOLDADO) {
+                if (isCarnivoro && isGenomaXY) {
+                    // Soldado + Carnívoro (inyectado con XY) -> Sigue vivo
+                    VJConfig.showMsg("El Soldado ha comido correctamente.");
+                } else {
+                    // Cualquier otro caso -> Muere
+                    hormiga.setIdCatalogoEstado(ESTADO_MUERTA);
+                    VJConfig.showMsgError("Ups...! El Soldado ha muerto.");
+                    isUpdated = true;
+                }
             } else {
-                VJConfig.showMsgError("Error al alimentar la hormiga.");
+                VJConfig.showMsg("Esta hormiga no necesita alimentación especial.");
+            }
+    
+            // Actualizar en la BD solo si hubo cambios
+            if (isUpdated && dao.vjupdate(hormiga)) {
+                vjShowData();
+            } else if (isUpdated) {
+                VJConfig.showMsgError("Error al actualizar la hormiga.");
             }
         } catch (Exception e) {
             e.printStackTrace();
             VJConfig.showMsgError("Error: " + e.getMessage());
         }
     }
+    
+    
 
     private void vjEntrenarHormiga() {
         try {

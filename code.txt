@@ -1,0 +1,413 @@
+package VJBLC;
+
+import java.util.List;
+import java.util.function.Supplier;
+
+import VJDAC.VJIDAO;
+
+public class VJBLFactory<T>{
+
+    private final VJIDAO<T> oDAO;
+    
+    public VJBLFactory(Supplier<VJIDAO<T>> supplier){
+        this.oDAO = supplier.get();
+    }
+
+    public List<T> getAll() throws Exception{
+        return oDAO.vjreadAll();
+    }
+
+    public T getBy(Integer id) throws Exception{
+        return oDAO.vjreadBy(id);
+    }
+
+    public boolean add(T oT) throws Exception{
+        return oDAO.vjcreate(oT);
+    }
+
+    public boolean upd(T oT) throws Exception{
+        return oDAO.vjupdate(oT);
+    }
+
+    public boolean del(Integer id) throws Exception{
+        return oDAO.vjdelete(id);
+    }
+}package VJBLC;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import VJDAC.VJDAO.VJCatalogoDAO;
+import VJDAC.VJDTO.VJCatalogoDTO;
+
+public class VJCatalogo {
+
+    protected VJCatalogoDAO oCatalogoDAO = new VJCatalogoDAO();
+    public Map<Integer, String> vjgetAllHormigaTipo() throws Exception{
+        return vjgetMap(1);
+    }
+
+    
+    public Map<Integer, String> vjgetAllHormigaTipoSexo() throws Exception{
+        return vjgetMap(2);
+    }
+    
+    public Map<Integer, String> vjgetAllHormigaTipoEstado() throws Exception{
+        return vjgetMap(3);
+    }
+
+    public Map<Integer, String> raGetAllHormigaTipoGeno() throws Exception{
+        return vjgetMap(4);
+    }
+
+    public Map<Integer, String> raGetAllHormigaTipoIngesta() throws Exception{
+        return vjgetMap(5);
+    }
+
+    private Map<Integer, String> vjgetMap(Integer idCatalogoPadre) throws Exception {
+        Map<Integer, String> map = new HashMap<>();
+        for (VJCatalogoDTO pt : oCatalogoDAO.vjreadByPadre(idCatalogoPadre)) {
+            map.put(pt.getIdCatalogoPadre(), pt.getNombre());  // Cambiar IdCatalogo por IdCatalogoPadre
+        }
+        return map;
+    }   
+}
+package VJBLC;
+
+import java.util.ArrayList;
+
+import VJBLC.VJEntities.VJCarnivoro;
+import VJBLC.VJEntities.VJGenoAlimento;
+import VJBLC.VJEntities.VJHLarva;
+import VJBLC.VJEntities.VJHormiga;
+import VJBLC.VJEntities.VJIngestaNativa;
+import VJBLC.VJEntities.VJX;
+import VJBLC.VJEntities.VJXY;
+import VJDAC.VJHormigueroDAC;
+import VJInfra.VJAppException;
+
+public class VJHormigueroBL {
+
+    public ArrayList<VJHormiga> lstHormiguero = new ArrayList<>();
+
+    public String crearLarva() throws VJAppException{    
+        VJHormiga hormiga = new VJHLarva(lstHormiguero.size()+1); 
+        lstHormiguero.add(hormiga); 
+        return "HORMIGA LARVA, agregada al hormiguero"; 
+    } 
+
+    public String eliminarHormiga(int idHormiga) throws Exception {
+        for (VJHormiga hormiga : lstHormiguero) {
+            if (hormiga.getId() == idHormiga) {
+                hormiga.setEstado("MUERTA");
+                return hormiga.getTipo() + " marcada como MUERTA";
+            }
+        }
+        return "HORMIGA no encontrada";
+    }
+
+    public String guardarHormiguero() throws VJAppException {
+        StringBuilder fullDataHormiga = new StringBuilder();
+        for (VJHormiga hormiga : lstHormiguero)
+            fullDataHormiga.append(hormiga.toString()).append("\n");
+        new VJHormigueroDAC().saveHormigueroCSV(null);
+        return "HORMIGUERO GUARDADO";
+    }
+
+    public String alimentarHormiga(int Idhormiga, String alimentoGeno, String alimentoNativo) throws VJAppException{ 
+        int indexList = 0; 
+        VJGenoAlimento    aGeno   = null; 
+        VJIngestaNativa   aNativo = null; 
+        VJHormiga         hormiga = null; 
+        //creando GenoAlimento 
+        switch (alimentoGeno) { 
+            case "XY":  aGeno = new VJXY(alimentoNativo, alimentoNativo);    break; 
+            default:    aGeno = new VJX(alimentoNativo, alimentoNativo);     break; 
+        } 
+ 
+        //creando IngestaNativa 
+        switch (alimentoNativo) { 
+            case "Carnívoro":   aNativo = new VJCarnivoro();    break; 
+        } 
+        //buscar indexList y hormiga a alimentar 
+        for (;indexList < lstHormiguero.size(); indexList++)  
+            if (lstHormiguero.get(indexList).getId() == Idhormiga) { 
+                hormiga = lstHormiguero.get(indexList); 
+                break; 
+            } 
+         
+        //validamos 
+        if (aNativo == null || aGeno == null || hormiga == null || hormiga.getEstado() == "MUERTA") 
+            return "Ups...! alimento u hormiga no son válidos"; 
+ 
+        //inyectamos el genoAlimento a la ingestaNativa y se procede a alimenta a la hormiga 
+        if( aNativo.inyectar(aGeno)) 
+            lstHormiguero.set(indexList,  hormiga.comer(aNativo)); 
+        else 
+            return hormiga.getTipo() + " NO alimentada"; 
+ 
+        return lstHormiguero.get(indexList).getTipo() + " Alimentada"; 
+    } 
+}
+
+
+package VJDAC;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+import VJInfra.VJAppException;
+
+public class VJDataHelperSQLite {
+    private static String DBPathConnection = "jdbc:sqlite:VJDataBase//VJEcuaAnt.sqlite";
+
+    protected VJDataHelperSQLite(){}
+
+    protected synchronized Connection openConnection() throws VJAppException{
+        try{
+            return DriverManager.getConnection(DBPathConnection);
+        } catch (Exception e){
+            throw new VJAppException(e, "SQLiteDataHelper", "SQLiteDataHelper()");
+        }
+    }
+
+    protected <T> T executeReadBy(String query, Function<ResultSet, T> mapper, Object... params) throws Exception{
+        try(Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query)){
+                for (int i = 0; i < params.length; i++){
+                    pstmt.setObject(i + 1, params[i]);
+                }
+                ResultSet rs = pstmt.executeQuery();
+                return rs.next() ? mapper.apply(rs) : null;
+            } catch (SQLException e) {
+                throw new VJAppException(e, getClass().getName(), "executeReadBy()");
+            }
+    }
+
+    protected <T> List<T> executeReadByPadre(String query, Function<ResultSet, T> mapper, Object... params) throws Exception{
+        List<T> list = new ArrayList<>();
+        try(Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query)){
+                for (int i = 0; i < params.length; i++){
+                    pstmt.setObject(i + 1, params[i]);
+                }
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()){
+                    list.add(mapper.apply(rs));
+                }
+            } catch (SQLException e) {
+                throw new VJAppException(e, getClass().getName(), "executeReadByPadre()");
+            }
+            return list;
+    }
+
+    protected <T> List<T> executeReadAll(String query, Function<ResultSet, T> mapper) throws Exception{
+        List<T> list = new ArrayList<>();
+        try(Connection conn = openConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery()){
+            while (rs.next()){
+                list.add(mapper.apply(rs));
+            }
+        } catch (SQLException e) {
+              throw new VJAppException(e, getClass().getName(), "executeReadAll()");
+            }
+            return list;
+    }
+    
+    protected boolean execute(String query, Object... params) throws Exception{
+        try(Connection conn = openConnection();
+        PreparedStatement pstmt = conn.prepareStatement(query)){
+            for (int i = 0; i < params.length; i++){
+                pstmt.setObject(i + 1, params[i]);
+            }
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println(e);
+            throw new VJAppException(e, getClass().getName(), "execute()");
+        }
+    }
+
+    protected String getDateTimeNow(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return dtf.format(LocalDateTime.now());
+    }
+
+}
+package VJDAC;
+
+import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import VJInfra.VJAppException;
+import VJInfra.VJConfig;
+
+import java.io.PrintWriter;
+
+public class VJHormigueroDAC {
+    public void saveHormigueroCSV(List<String> fullDataHormiga) throws VJAppException{
+        try (PrintWriter writer = new PrintWriter(new FileWriter(VJConfig.DATEFILE, true))) {
+            for (String hormiga : fullDataHormiga) {
+                writer.println(hormiga);
+            }
+        } catch (IOException e) {
+            throw new VJAppException(e, this.getClass().toString(), "saveHormigueroCSV(...)");
+        }
+    }
+}
+package VJDAC;
+
+import java.sql.ResultSet;
+import java.util.List;
+
+public interface VJIDAO<T> {
+    T           vjnewDTO(ResultSet rs);
+    T           vjreadBy(Integer id) throws Exception;
+    List<T>     vjreadAll() throws Exception;
+    boolean     vjcreate(T dto) throws Exception;
+    boolean     vjupdate(T dto) throws Exception;
+    boolean     vjdelete(Integer id) throws Exception;
+    Integer     vjgetMaxRow() throws Exception;
+} 
+package VJInfra;
+
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class VJAppException extends Exception {
+    public VJAppException(String message) {
+        super(message);
+        logErrorToFile(message, "", "");
+    }
+
+    public VJAppException(Exception e, String clase, String metodo) {
+        super("UPS...! Hormiguero sin control...");
+        logErrorToFile(e.getMessage(), clase, metodo);
+    }
+
+    private void logErrorToFile(String message, String clase, String metodo) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(VJConfig.LOGFILE, true))) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            System.out.println("VJAppException" + " - " + clase + "." + clase + ": " + message);
+            writer.println(now.format(formatter) + " - " + clase + "." + clase + ": " + message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("VJAppException" + " - " + clase + "." + clase + ": " + message);
+        }
+    }
+}
+package VJInfra;
+
+import javax.swing.JOptionPane;
+
+public abstract class VJConfig {
+    //public static final String URL_LOGO = VJConfig.class.getResourceAsStream("VJUIC/VJResource/logo.png");
+    //public static final URL URL_LOGO = Config.class.getResource("VJUIC/VJResource/logo.png");
+    public static final String DATEFILE = "VJDataFile/hormiguero.csv";
+    public static final String LOGFILE = "VJDataFile/log.txt";
+    
+
+    public static final void showMsg(String msg) {
+        JOptionPane.showMessageDialog(null, msg, "🐜 EcuAnt", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static final void showMsgError(String msg) {
+        JOptionPane.showMessageDialog(null, msg, "💀 EcuAnt", JOptionPane.OK_OPTION);
+    }
+
+    public static final boolean showConfirmYesNo(String msg) {
+        return (JOptionPane.showConfirmDialog(null, msg, " 🐜 EcuAnt",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION);
+    }
+}
+package VJUIC;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.net.URL;
+
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+public abstract class VJEcuaAntStyle {
+    public static final Color VJCOLOR_FONT = new Color(220, 0, 0); //(218, 8, 40)
+    public static final Color VJCOLOR_FONT_LIGHT = new Color(100, 100, 100);
+    public static final Color VJCOLOR_CURSOR = Color.black;
+    public static final Color VJCOLOR_BORDER = Color.lightGray;
+    public static final Font  VJFONT         = new Font("JetBrains Mono", Font.PLAIN, 14);
+    public static final Font  VJFONT_BOLD    = new Font("JetBrains Mono", Font.BOLD | Font.PLAIN, 14);
+    public static final Font  VJFONT_SMALL   = new Font("JetBrains Mono", Font.PLAIN| Font.PLAIN, 10);
+
+    public static final int VJALIGNMENT_LEFT  = SwingConstants.LEFT;
+    public static final int VJALIGNMENT_RIGHT = SwingConstants.RIGHT;
+    public static final int VJALIGNMENT_CENTER= SwingConstants.CENTER;
+
+    public static final Cursor VJCURSOR_HAND    = new Cursor(Cursor.HAND_CURSOR);
+    public static final Cursor VJCURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
+
+    public static final URL VJURL_MAIN  = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/logo.png");
+    public static final URL VJURL_LOGO  = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/logo.png");
+    public static final URL VJURL_SPLASH = VJEcuaAntStyle.class.getResource("/VJUIC/VJResource/icono.png");
+
+
+    public static final CompoundBorder createBorderRect(){
+        return BorderFactory.createCompoundBorder(  new LineBorder(Color.lightGray),
+                                                    new EmptyBorder(5, 5, 5, 5));
+    }
+
+   
+    public static final void showMsg(String msg) {
+        JOptionPane.showMessageDialog(null, msg, "🐜 EcuAnt", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static final void showMsgError(String msg) {
+        JOptionPane.showMessageDialog(null, msg, "💀 EcuAnt", JOptionPane.OK_OPTION);
+    }
+
+    public static final boolean showConfirmYesNo(String msg) {
+        return (JOptionPane.showConfirmDialog(null, msg, " 🐜 EcuAnt",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION);
+    }
+}
+import javax.swing.JFrame;
+
+import VJUIC.VJForm.VJHormigaPanel;
+import VJUIC.VJForm.VJSplashForm;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        
+        VJSplashForm.show();
+        //titulo del frame
+        JFrame frame = new JFrame("Hormiguero Experimental");
+        //tamaño del frame
+        frame.setSize(700, 600);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        VJHormigaPanel panel = new VJHormigaPanel();
+        
+        //agregar panel al frame
+        frame.add(panel);
+
+        //mostrar el frame
+        frame.setVisible(true);
+    
+    }
+}

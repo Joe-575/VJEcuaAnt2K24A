@@ -10,7 +10,7 @@ public class App {
         //titulo del frame
         JFrame frame = new JFrame("Hormiguero Experimental");
         //tamaño del frame
-        frame.setSize(700, 600);
+        frame.setSize(800, 700);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

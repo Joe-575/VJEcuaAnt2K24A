@@ -17,5 +17,3 @@ JOIN VJCatalogo cEstado ON h.idCatalogoEstado = cEstado.idCatalogo
 JOIN VJCatalogo cIngestaNativa ON h.idCatalogoIngestaNativa = cIngestaNativa.idCatalogo
 WHERE h.estado = 'A';
 
--- Verifica la existencia de la columna idHormiga en la tabla VJHormiga
-PRAGMA table_info(VJHormiga);
