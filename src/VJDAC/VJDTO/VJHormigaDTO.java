@@ -7,7 +7,7 @@ public class VJHormigaDTO {
     private Integer idCatalogoEstado;
     private Integer idCatalogoGenoAlimento;
     private Integer idCatalogoIngestaNativa;
-    private String Entrenada;
+    private String entrenada;
     private String nombre;
     private String estado;
     private String fechaCreacion;
@@ -25,17 +25,22 @@ public class VJHormigaDTO {
         this.idCatalogoEstado = idCatalogoEstado;
         this.idCatalogoGenoAlimento = idCatalogoGenoAlimento;
         this.idCatalogoIngestaNativa = idCatalogoIngestaNativa;
-        Entrenada = entrenada;
+        this.entrenada = entrenada;
         this.nombre = nombre;
         this.estado = estado;
         this.fechaCreacion = fechaCreacion;
         this.fechaModificacion = fechaModificacion;
     }
 
-    public VJHormigaDTO(Integer idCatalogoTipo, Integer idCatalogoSexo, Integer idCatalogoEstado, String nombre) {
+    
+
+    public VJHormigaDTO(Integer idCatalogoTipo, Integer idCatalogoSexo, Integer idCatalogoEstado,
+            Integer idCatalogoGenoAlimento, Integer idCatalogoIngestaNativa, String nombre) {
         this.idCatalogoTipo = idCatalogoTipo;
         this.idCatalogoSexo = idCatalogoSexo;
         this.idCatalogoEstado = idCatalogoEstado;
+        this.idCatalogoGenoAlimento = idCatalogoGenoAlimento;
+        this.idCatalogoIngestaNativa = idCatalogoIngestaNativa;
         this.nombre = nombre;
     }
 
@@ -132,11 +137,11 @@ public class VJHormigaDTO {
     }
 
     public String getEntrenada() {
-        return Entrenada;
+        return entrenada;
     }
 
     public void setEntrenada(String entrenada) {
-        Entrenada = entrenada;
+        this.entrenada = entrenada;
     }
 
     @Override

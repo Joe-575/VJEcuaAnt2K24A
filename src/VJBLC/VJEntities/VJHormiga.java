@@ -66,7 +66,7 @@ public class VJHormiga implements IVJHormiga {
 
     public VJHormiga(int id) {
         this.id = id;
-        this.estado = "VIVA";
+        this.estado = "Viva";
         this.tipo = "Desconocida"; // o cualquier otro valor por defecto
         this.nombre = "Hormiga " + id;
     }
@@ -105,7 +105,7 @@ public class VJHormiga implements IVJHormiga {
 
     // Método para simular el proceso de comer
     public VJHormiga comer(VJIngestaNativa ingestaNativa) {
-        // Aquí iría la lógica para la alimentación
+        // lógica para la alimentación
         return this; // Devuelve la misma hormiga tras alimentarse
     }
 
@@ -115,4 +115,6 @@ public class VJHormiga implements IVJHormiga {
                 + " - " + aComido.getTipo()
                 + "\n";
     }
+
+    
 }

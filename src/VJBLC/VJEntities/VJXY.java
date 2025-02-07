@@ -2,8 +2,8 @@ package VJBLC.VJEntities;
 
 public class VJXY extends VJGenoAlimento{
 
-    public VJXY(String VJtipo, String VJcaracterísticasGenéticas) {
-        super(VJtipo, VJcaracterísticasGenéticas);
+    public VJXY(String VJtipo, String VJcaracteristicasGeneticas) {
+        super(VJtipo, VJcaracteristicasGeneticas);
     }    
     @Override
     public void aplicarEvolucion(VJHormiga hormiga) {

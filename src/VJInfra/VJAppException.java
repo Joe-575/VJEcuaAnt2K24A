@@ -20,11 +20,11 @@ public class VJAppException extends Exception {
         try (PrintWriter writer = new PrintWriter(new FileWriter(VJConfig.LOGFILE, true))) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
-            System.out.println("AppException" + " - " + clase + "." + clase + ": " + message);
+            System.out.println("VJAppException" + " - " + clase + "." + clase + ": " + message);
             writer.println(now.format(formatter) + " - " + clase + "." + clase + ": " + message);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("AppException" + " - " + clase + "." + clase + ": " + message);
+            System.out.println("VJAppException" + " - " + clase + "." + clase + ": " + message);
         }
     }
 }
